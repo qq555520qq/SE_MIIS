@@ -1,0 +1,94 @@
+*** Settings ***
+Library    SeleniumLibrary
+Library    String    
+Library    Collections
+
+*** Variables ***
+${shortPeriodOfTime} =    3s
+&{doctorAccount} =    userName=F129642705    password=1224
+&{patientAccount} =    userName=F129642702    password=1224
+&{adminAccount} =	userName=admin    password=admin
+
+*** Keywords ***
+wait item should be deleted
+    [Arguments]    ${name}    ${id}
+    Wait Until Element Is Visible On Page     //*[contains(@class,'ng-star-inserted') and normalize-space()='${name}']//following-sibling::*[normalize-space()='${id}']    timeout=${shortPeriodOfTime}    error=Should be deleted.
+
+Select Calender day
+    [Arguments]    ${fieldname}    ${day}
+    Click Element After It Is Visible    //div[normalize-space()='${fieldname}']//./following-sibling::*//p-calendar
+    Click Element After It Is Visible    //td[contains(@class,'ng-star-inserted') and normalize-space()='${day}']
+
+Click Button After It Is Visible
+    [Arguments]    ${xpath}
+    Wait Until Element Is Visible On Page    ${xpath}    ${shortPeriodOfTime}    error=Login successfully should be shown.
+    click button    ${xpath}
+    sleep    1
+
+Login To The Page
+    [Arguments]    ${userName}    ${password}=${EMPTY}
+    Input Text    id=float-inputUser    ${userName}
+    sleep    1
+    Run Keyword If    '${password}'!='${EMPTY}'    Input Text    id=float-inputPass    ${password}
+    Click Button After It Is Visible    //button[normalize-space()='Login']
+    sleep    1
+	
+Success Should be Visible
+    [Arguments]    ${message}
+    Wait Until Page Contains Element    //*[@class='ui-toast-summary' and normalize-space()='${message}']    ${shortPeriodOfTime}    error=Login successfully should be shown.
+    Wait Until Element Is Visible    //*[@class='ui-toast-summary' and normalize-space()='${message}']    ${shortPeriodOfTime}    error=Login successfully should be shown.
+    sleep    1
+
+Login failed Should be Visible
+    Wait Until Page Contains Element    //*[@class='ui-toast-summary' and normalize-space()='Login failed']    ${shortPeriodOfTime}    error=Login failed should be shown.
+    Wait Until Element Is Visible    //*[@class='ui-toast-summary' and normalize-space()='Login failed']    ${shortPeriodOfTime}    error=Login failed should be shown.
+
+Login failed Should be Visible noew
+    Wait Until Page Contains Element    //*[@class='ui-toast-summary' and normalize-space()='Save successfully']    ${shortPeriodOfTime}    error=Login failed should be shown.
+    Wait Until Element Is Visible    //*[@class='ui-toast-summary' and normalize-space()='Save successfully']    ${shortPeriodOfTime}    error=Login failed should be shown.
+
+Wait Until Element Is Visible On Page
+    [Arguments]    ${xpath}    ${timeout}    ${error}
+    Wait Until Page Contains Element     ${xpath}    ${timeout}    ${error}
+    Wait Until Element Is Visible     ${xpath}    ${timeout}    ${error}
+
+Click Element After It Is Visible
+    [Arguments]    ${xpath}
+    Wait Until Element Is Visible On Page    ${xpath}    ${shortPeriodOfTime}    error=Element is not visible.
+    click Element    ${xpath}
+    sleep    1
+
+Click Tab
+    [Arguments]    ${tabName}    ${subTabName}=${EMPTY}
+    # &{newNames} =    Create Dictionary    Appointment=Appoint    Rental=Rental
+    Mouse Over    //*[@class='ui-menuitem-link ui-corner-all ng-star-inserted']//*[normalize-space()='FHIR']
+    sleep    1
+    Run Keyword If    '${subTabName}' != '${EMPTY}'    Run Keywords    Mouse Over    //*[@class='ui-menuitem-link ui-corner-all ng-star-inserted']//*[normalize-space()='${tabName}']
+                                                       ...      AND    Click Element After It Is Visible    //*[@class='ui-menuitem-link ui-corner-all ng-star-inserted']//*[normalize-space()='${subTabName}']
+                                                       ...      AND    Wait Until Element Is Visible On Page    //*[contains(@class,'ng-star-inserted')]//div[normalize-space()='${subTabName}']    ${shortPeriodOfTime}    error=should be visible.
+    ...       ELSE    Click Element After It Is Visible    //*[@class='ui-menuitem-link ui-corner-all ng-star-inserted']//*[normalize-space()='${tabName}']
+
+Click Row
+    Click Element After It Is Visible    //*[@class='ng-star-inserted' and normalize-space()='Hank']//following-sibling::*[normalize-space()='Wheelchair']//following-sibling::*[normalize-space()='1']//following-sibling::*[normalize-space()='2019-12-22']
+
+Click Row By User Account Management
+    [Arguments]    ${name}    ${id}
+    Click Element After It Is Visible    //*[contains(@class,'ng-star-inserted') and normalize-space()='${name}']//following-sibling::*[normalize-space()='${id}']
+
+Select Dropdown By Name
+    [Arguments]    ${fieldName}    ${dropdownName}    ${default}=${EMPTY}
+    &{newFieldNames} =    Create Dictionary    DeviceName=device    Quantity=quantity    Subject=subject    Doctor=doctor    Time=time    Gender=gender    Role=Patient    Condition=condition    Medications=medication
+    # ${newFieldNames} =    Convert To Lowercase    ${fieldName}
+    Run Keyword If    '${default}'=='${EMPTY}'    Click Element After It Is Visible    //div[normalize-space()='${fieldName}']//./following-sibling::*//div[contains(normalize-space(),'&{newFieldNames}[${fieldName}]')]
+    ...       ELSE    Click Element After It Is Visible    //div[normalize-space()='${fieldName}']//./following-sibling::*//div[contains(normalize-space(),'${default}')]
+    Wait Until Element Is Visible On Page    //*[contains(@class, 'ui-dropdown-items ui-dropdown-list')]    timeout=${shortPeriodOfTime}    error=`${dropdownName}` select dropdown should be visible.
+    Click Element After It Is Visible    //*[contains(@class,'ng-star-inserted')]//li[normalize-space()='${dropdownName}']
+    Wait Until Element Is Visible On Page    //*[contains(@class,'ui-dropdown-label') and normalize-space()='${dropdownName}']    timeout=${shortPeriodOfTime}    error=`${dropdownName}` dropdown should be selected.
+
+Click Save Button And Show Success
+    Click Element After It Is Visible    //span[normalize-space()='Save']
+    Success Should be Visible    Save successfully
+
+Click Save Button And Show Fail
+    Click Element After It Is Visible    //span[normalize-space()='Save']
+    Success Should be Visible    Save failed

@@ -1,0 +1,220 @@
+<p-toast [style]="{ marginTop: '80px' }"></p-toast>
+
+<!-- 病人列表 -->
+<p-table id="patient_table" *ngIf="patients" #caseTable [columns]="patientsCol" [value]="patients"
+  selectionMode="single" [(selection)]="selectedPatient" [paginator]="true" [rows]="10"
+  (onRowSelect)="selectPatient($event)" [loading]="patientListLoading">
+  <!-- 標題 -->
+  <ng-template pTemplate="caption">
+    Medical Record Management
+  </ng-template>
+  <!-- 列表欄位 -->
+  <ng-template pTemplate="header" let-columns>
+    <tr style="font-size: 18px;">
+      <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+        {{ col.header }}
+        <p-sortIcon [field]="col.field"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+  <!-- 列表內容 -->
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <tr *ngIf="rowData" [pSelectableRow]="rowData" style="height: 6vh;font-size: 16px;">
+      <td *ngFor="let col of columns" [id]="'case_'+col.field+'_'+rowData.id">
+        <div class=" row justify-content-center align-items-center">
+          <ng-container>
+            {{ rowData[col.field] }}
+          </ng-container>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <!-- 沒有任何病人時顯示 -->
+  <ng-template pTemplate="emptymessage" let-columns>
+    <tr>
+      <td [attr.colspan]="columns.length">
+        No patient found
+      </td>
+    </tr>
+  </ng-template>
+  <!-- 底部 -->
+  <ng-template pTemplate="summary" let-rowData>
+    <div style="text-align:left">
+      <!-- 顯示統計圖表 -->
+      <button pButton icon="fa fa-bar-chart" label="Chart" (click)="showChart()"
+        style="margin-right: 5px;font-size: 18px;"></button>
+      <button pButton icon="fa fa-refresh" (click)="redirectToPatientList()"
+        style="margin-right: 5px;font-size: 18px;"></button>
+    </div>
+  </ng-template>
+</p-table>
+
+<!-- 統計圖表 -->
+<p-dialog id="chart_dialog" *ngIf="medicalRecords && conditionMap" header="Medical Record Chart"
+  [(visible)]="isChartShow" [responsive]="true" showEffect="fade" [closable]="true" [width]="900" [modal]="true"
+  [draggable]="false" [height]="500">
+  <p-chart id="pieChart" *ngIf="chartSwitch" type="pie" [data]="chartInfo"></p-chart>
+  <p-chart id="barChart" *ngIf="!chartSwitch" type="bar" [data]="chartInfo"></p-chart>
+  <p-footer>
+    <button *ngIf="chartSwitch" pButton icon="fa fa-pie-chart" label="pie" type=button
+      (click)="changeChartType()"></button>
+    <button *ngIf="!chartSwitch" pButton icon="fa fa-bar-chart" label="bar" type=button
+      (click)="changeChartType()"></button>
+    <button pButton icon="fa fa-sign-out" type="button" (click)="redirectToPatientList()" label="Exit"></button>
+  </p-footer>
+</p-dialog>
+
+<!-- 選擇的病人之病例列表 -->
+<p-dialog *ngIf="viewRecords && displayRecordList" id="account_records_dialog" header="Medical Record List"
+  [(visible)]="displayRecordList" [responsive]="true" showEffect="fade" [width]="1000" [modal]="true" [closable]="false"
+  [draggable]="false" height="600">
+  <p-table [value]="viewRecords" [responsive]="true" #caseTable [columns]="medicalRecordCol" selectionMode="single"
+    [loading]="recordListLoading" [(selection)]="selectedRecord" (onRowSelect)="selectRecord($event)"
+    [scrollable]="true" scrollHeight="50vh">
+    <!-- 列表欄位 -->
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+          {{ col.header }}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+      </tr>
+      <tr>
+        <th *ngFor="let col of columns" [ngSwitch]="col.field" class="ui-fluid">
+          <input pInputText type="text" [value]="caseTable.filters[col.field]?.value">
+        </th>
+      </tr>
+    </ng-template>
+    <!-- 列表內容 -->
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr *ngIf="rowData" [pSelectableRow]="rowData" [id]="rowData.id" style="font-size:17px">
+        <td *ngFor="let col of columns" [id]="'medical_'+col.field+'_'+rowData.id">
+          <div class="row justify-content-center align-items-center">
+            <ng-container>
+              {{ rowData[col.field] }}
+            </ng-container>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <!-- 底部 -->
+    <ng-template pTemplate="summary" let-rowData>
+      <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align:right">
+          <button pButton icon="fa fa-refresh" (click)="getMedicalRecord()"
+            style="position:absolute;left: 10px;"></button>
+          <button *ngIf="currentUser.role!=='patient'&&currentUser.role!=='admin'" pButton icon="fa fa-plus"
+            type="button" label="Add a record" (click)="addMedicalRecord()" style="margin-right: 5px;">
+          </button>
+          <button pButton icon="fa fa-sign-out" type="button" (click)="redirectToPatientList()" label="Exit"></button>
+        </div>
+      </p-footer>
+    </ng-template>
+    <!-- 沒有任何紀錄時顯示 -->
+    <ng-template pTemplate="emptymessage" let-columns>
+      <tr>
+        <td [attr.colspan]="columns.length">
+          No record found
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-dialog>
+
+<!-- 詳細病例 -->
+<p-dialog id="record_detail_dialog" *ngIf="medicalRecord && medications && doctor" header="Medical Record"
+  [closable]="false" [(visible)]="displayRecordDetail" [responsive]="true" showEffect="fade" [modal]="true"
+  [draggable]="false" [width]="600">
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-8">
+      <!-- 病人 -->
+      <div class="ui-g-4">
+        <label for="patientName">Name</label>
+      </div>
+      <div class="ui-g-8">
+        <input pInputText id="patientName" [(ngModel)]="selectedPatient.userName" readonly />
+      </div>
+      <!-- 日期 -->
+      <div class="ui-g-4">
+        <label for="date">Date</label>
+      </div>
+      <div class="ui-g-8">
+        <input pInputText id="date" [(ngModel)]="medicalRecord.date" readonly />
+      </div>
+      <!-- 科別 -->
+      <div class="ui-g-4">
+        <label for="subject">Subject</label>
+      </div>
+      <div class="ui-g-8">
+        <input pInputText id="subject" [(ngModel)]="doctor.subject" readonly />
+      </div>
+      <!-- 醫生 -->
+      <div class="ui-g-4">
+        <label for="doctorName">Doctor</label>
+      </div>
+      <div class="ui-g-8">
+        <input pInputText id="doctorName" [(ngModel)]="medicalRecord.doctorName" readonly />
+      </div>
+    </div>
+    <!-- 病症 -->
+    <div class="ui-g-12">
+      <label class="xrequired" for="contition">Condition</label>
+    </div>
+    <div class="ui-g-12">
+      <p-dropdown *ngIf="newMedicalRecord" [options]="conditionList" [(ngModel)]="medicalRecord.condition"
+        placeholder="Select condition" appedTo="body" autofocus="true" [disabled]="!newMedicalRecord">
+      </p-dropdown>
+      <input *ngIf="!newMedicalRecord" pInputText id="condition" [(ngModel)]="medicalRecord.condition" readonly />
+    </div>
+    <!-- 處方 -->
+    <div class="ui-g-3">
+      <label class="xrequired" for="medications">Medications</label>
+    </div>
+    <!-- 新增處方Button -->
+    <div class="ui-g-2">
+      <button *ngIf="currentUser.role!=='patient'&&currentUser.role!=='admin'&&medicationRequest" type="button" pButton
+        icon="fa fa-plus" (click)="addMedicationRequest()" label="Add" class="ui-button-success"
+        [disabled]="!(medicationRequest && medicationRequest.dose && medicationRequest.medication)">
+      </button>
+      <button *ngIf="currentUser.role!=='patient'&&currentUser.role!=='admin'&&!medicationRequest" type="button" pButton
+        icon="fa fa-plus" (click)="addMedicationRequest()" label="Add" class="ui-button-success">
+      </button>
+    </div>
+  </div>
+  <!-- 處方列表 -->
+  <p-scrollPanel [style]="{width: '100%', height: '200px'}">
+    <!-- 新增多個處方 -->
+    <div *ngFor="let request of medicationRequests" class="ui-g-12 ui-fluid">
+      <div class="ui-g-4">
+        <p-autoComplete *ngIf="currentUser.role!=='patient'&&currentUser.role!=='admin'" [suggestions]="medicationList"
+          (completeMethod)="searchMedication($event)" placeholder="Select medication" appendTo="body"
+          [(ngModel)]="request.medication" (onSelect)="selectMedication(request)" [dropdown]="true">
+        </p-autoComplete>
+        <input *ngIf="currentUser.role==='patient'||currentUser.role==='admin'" pInputText
+          [(ngModel)]="request.medication" readonly />
+      </div>
+      <div class="ui-g-2">
+        <label style="font-size: 20px;">dose:</label>
+      </div>
+      <div class="ui-g-2">
+        <input pInputText [(ngModel)]="request.dose"
+          [readOnly]="currentUser.role==='patient'||currentUser.role==='admin'" />
+      </div>
+      <div class="ui-g-2">
+        <label style="font-size: 20px;">unit:</label>
+      </div>
+      <div class="ui-g-2">
+        <input pInputText [(ngModel)]="request.unit" readonly />
+      </div>
+    </div>
+  </p-scrollPanel>
+  <!-- 底部 -->
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button *ngIf="currentUser.role!=='patient'&&currentUser.role!=='admin'" type="button" pButton icon="fa fa-check"
+        (click)="saveMedicalRecord()" label="Save" class="ui-button-success">
+      </button>
+      <button pButton icon="fa fa-sign-out" type="button" (click)="redirectToRecordList()" label="Cancel"></button>
+    </div>
+  </p-footer>
+</p-dialog>

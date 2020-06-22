@@ -1,0 +1,223 @@
+<p-toast [style]="{marginTop: '10%'}" position="top-center" key="err"></p-toast>
+<p-toast [style]="{marginTop: '5%'}" position="top-center"></p-toast>
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
+
+<p-table *ngIf="accounts" #accountTable [columns]="accountCol" [value]="viewAccounts" selectionMode="single"
+  [(selection)]="selectedAccount" (onRowSelect)="onRowSelect($event)" [loading]="tableLoading" [scrollable]="true"
+  scrollHeight="75vh">
+  <ng-template pTemplate="caption">
+    User-Account-Management
+  </ng-template>
+  <!-- 標題 -->
+  <ng-template pTemplate="header" let-columns>
+    <tr style="font-size: 18px;">
+      <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+        {{col.header}}
+        <p-sortIcon [field]="col.field"></p-sortIcon>
+      </th>
+    </tr>
+    <tr>
+      <th *ngFor="let col of columns" [ngSwitch]="col.field" class="ui-fluid">
+        <input pInputText type="text" (input)="accountTable.filter($event.target.value, col.field, col.filterMatchMode)"
+          [value]="accountTable.filters[col.field]?.value">
+      </th>
+    </tr>
+  </ng-template>
+  <!-- 內容 -->
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <tr *ngIf="rowData" [id]="rowData.id" [pSelectableRow]="rowData"
+      [ngClass]="!rowData['status'] ? 'statusFalse' : null" style="height: 7vh;font-size: 18px;">
+      <td *ngFor="let col of columns" class="autoNewline" [id]="'account_'+col.field+'_'+rowData.id">
+        <ng-container *ngIf="col.field!='birth' && col.field!='gender' && col.field!='role'">
+          {{rowData[col.field]}}
+        </ng-container>
+        <!-- gender -->
+        <ng-container *ngIf="col.field=='gender'">
+          {{rowData[col.field]}}
+        </ng-container>
+        <!-- Role -->
+        <ng-container *ngIf="col.field=='role'">
+          {{rowData[col.field]}}
+        </ng-container>
+        <!-- date -->
+        <ng-container *ngIf="col.field=='birth'">
+          {{rowData[col.field] | date:'yyyy-MM-dd'}}
+        </ng-container>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage" let-columns>
+    <tr>
+      <td [attr.colspan]="columns.length">
+        No account found
+      </td>
+    </tr>
+  </ng-template>
+  <!-- 底部 -->
+  <ng-template pTemplate="summary" let-rowData>
+    <div style="text-align:left">
+      <button pButton icon="fa fa-refresh" (click)="getAccounts()" style="margin-right: 5px;font-size: 18px;"></button>
+      <button *ngIf="loginRole==='admin' || loginRole === 'doctor' || loginRole === 'nurse'" pButton
+        icon="fa fa-user-plus" label="Add an account" (click)="addAccount()" style="font-size: 18px;"></button>
+    </div>
+  </ng-template>
+</p-table>
+
+<!-- 跳出的輸入視窗 -->
+<p-dialog id='account_addDialog' *ngIf="account && displayDialog" header="Account Detail" [(visible)]="displayDialog"
+  [responsive]="true" showEffect="fade" [modal]="true" [closable]="false" [draggable]="false">
+  <div class="ui-g ui-fluid" *ngIf="account && displayDialog">
+    <div class="ui-g-12">
+      <div class="ui-g-2">
+        <label for="name" class="xrequired">Name</label>
+      </div>
+      <div class="ui-g-4">
+        <input pInputText id="name" [(ngModel)]="account.userName"
+          [disabled]="!newAccount&&!(account.status&&account.active)" [readonly]="loginRole==='patient'" />
+      </div>
+      <div class="ui-g-2">
+        <label for="id" class="xrequired">Id</label>
+      </div>
+      <div class="ui-g-4">
+        <p-inputMask id="id" [(ngModel)]="account.idNum" [disabled]="!newAccount&&!(account.status&&account.active)"
+          [readonly]="loginRole==='patient'" mask="a999999999" characterPattern="[A-Z]">
+        </p-inputMask>
+      </div>
+      <div class="ui-g-2">
+        <label for="gender" class="xrequired">Gender</label>
+      </div>
+      <div class="ui-g-4">
+        <!-- 性別輸入介面 -->
+        <p-dropdown
+          *ngIf="(account.role!=='doctor' && loginRole==='doctor') || (account.role!=='nurse' && loginRole==='nurse') || loginRole==='admin'"
+          [options]="genderList" [(ngModel)]="account.gender" placeholder="Select gender" appendTo="body"
+          autofocus="true" [disabled]="!newAccount&&!(account.status&&account.active)">
+        </p-dropdown>
+        <!-- 性別不可修改 -->
+        <input
+          *ngIf="loginRole==='patient' || (account.role==='doctor' && loginRole==='doctor') || (account.role==='nurse' && loginRole==='nurse')"
+          pInputText id="gender" [(ngModel)]="account.gender" readonly />
+      </div>
+      <div class="ui-g-2">
+        <label for="role" class="xrequired">Role</label>
+      </div>
+      <div class="ui-g-4">
+        <!-- 權限輸入介面 -->
+        <p-dropdown
+          *ngIf="(account.role!=='doctor' && loginRole==='doctor') || (account.role!=='nurse' && loginRole==='nurse') || loginRole==='admin'"
+          [options]="roleList" [(ngModel)]="account.role" placeholder="Select role" appendTo="body" autofocus="true"
+          [disabled]="!newAccount&&!(account.status&&account.active) || loginRole==='patient'">
+        </p-dropdown>
+        <!-- 權限不可修改 -->
+        <input
+          *ngIf="loginRole==='patient' || (account.role==='doctor' && loginRole==='doctor') || (account.role==='nurse' && loginRole==='nurse')"
+          pInputText id="role" [(ngModel)]="account.role" readonly />
+      </div>
+      <div class="ui-g-2">
+        <label for="birthDate" class="xrequired">BirthDate</label>
+      </div>
+      <div class="ui-g-4">
+        <!-- 生日輸入介面 -->
+        <p-calendar
+          *ngIf="(account.role!=='doctor' && loginRole==='doctor') || (account.role!=='nurse' && loginRole==='nurse') || loginRole==='admin'"
+          [(ngModel)]="account.birth" dateFormat="yy-mm-dd" appendTo="body" showIcon="true" readonlyInput="true"
+          [yearNavigator]="true" yearRange="1911:2020" [maxDate]="today" [monthNavigator]="true"
+          [disabled]="!newAccount&&!(account.status&&account.active) || loginRole==='patient'">
+        </p-calendar>
+        <!-- 生日不可修改 -->
+        <input
+          *ngIf="loginRole==='patient' || (account.role==='doctor' && loginRole==='doctor') || (account.role==='nurse' && loginRole==='nurse')"
+          pInputText id="birth" [(ngModel)]="account.birthDate" readonly />
+      </div>
+      <div class="ui-g-2">
+        <label for="email" class="xrequired">Email</label>
+      </div>
+      <div class="ui-g-4">
+        <input pInputText id="email" type="text" [(ngModel)]="account.email"
+          pattern="[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+"
+          [disabled]="!newAccount&&!(account.status&&account.active)" />
+      </div>
+      <div class="ui-g-2">
+        <label for="address" class="xrequired">Address</label>
+      </div>
+      <div class="ui-g-10">
+        <input pInputText id="address" [(ngModel)]="account.userAddress"
+          [disabled]="!newAccount&&!(account.status&&account.active)" />
+      </div>
+      <ng-container *ngIf="account.role==='doctor' || account.role==='nurse'">
+        <div class="ui-g-2">
+          <label for="subject" class="xrequired">Subject</label>
+        </div>
+        <div class="ui-g-4">
+          <p-dropdown [options]="subjectList" [(ngModel)]="account.subject" placeholder="Select subject" appendTo="body"
+            autofocus="true" [disabled]="!newAccount&&!(account.status&&account.active)">
+          </p-dropdown>
+        </div>
+      </ng-container>
+      <ng-container
+        *ngIf="loginRole!=='patient' && ((account.role!=='doctor' && loginRole==='doctor') || (account.role!=='nurse' && loginRole==='nurse') || loginRole ==='admin')">
+        <div class="ui-g-2">
+          <label for="status">Status</label>
+        </div>
+        <div class="ui-g-4">
+          <p-inputSwitch [(ngModel)]="account.status" [disabled]="newAccount"></p-inputSwitch>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button
+        *ngIf="loginRole==='patient' || (loginRole==='doctor' && account.role==='doctor') || (loginRole==='nurse' && account.role==='nurse')"
+        pButton icon="fa fa-user-plus" label="Update password" (click)="showUpdatePanal()"
+        style="left:10px;position: absolute;"></button>
+      <button type="button" pButton icon="fa fa-check" (click)="saveAccount()"
+        [label]="newAccount?'Save':'Save Change'"></button>
+      <button *ngIf="!newAccount && (loginRole==='admin' || (loginRole === 'doctor' && account.role !=='doctor') || (loginRole === 'nurse' && account.role !=='nurse'))"
+        type="button" pButton icon="fa fa-close" (click)="deleteAccount()" label="Delete"></button>
+      <button type="button" pButton icon="fa fa-sign-out" (click)="exitAccount()" label="Cancel"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+
+<!-- 密碼更新視窗 -->
+<p-dialog *ngIf="updatePassObj" id='update_password' header="Update Password" [(visible)]="updateDialog"
+  [responsive]="true" showEffect="fade" [modal]="true" [closable]="false" [draggable]="false">
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+      <div class="ui-g-2">
+        <label for="oldPass" class="xrequired">Old Password</label>
+      </div>
+      <div class="ui-g-10">
+        <input *ngIf="!passwordShow" pInputText type="password" [(ngModel)]="updatePassObj.oldPass" />
+        <input *ngIf="passwordShow" pInputText type="text" [(ngModel)]="updatePassObj.oldPass" />
+      </div>
+      <div class="ui-g-2">
+        <label for="newPass" class="xrequired">New Password</label>
+      </div>
+      <div class="ui-g-10">
+        <input *ngIf="!passwordShow" pPassword type="password" [(ngModel)]="updatePassObj.newPass" />
+        <input *ngIf="passwordShow" pPassword type="text" [(ngModel)]="updatePassObj.newPass" />
+      </div>
+      <div class="ui-g-2">
+        <label for="confirmPass" class="xrequired">Confirm Password</label>
+      </div>
+      <div class="ui-g-10">
+        <input *ngIf="!passwordShow" pInputText type="password" [(ngModel)]="updatePassObj.confirmPass" />
+        <input *ngIf="passwordShow" pInputText type="text" [(ngModel)]="updatePassObj.confirmPass" />
+      </div>
+      <div class="ui-g-2">
+        <label for="showPass">Show Password</label>
+      </div>
+      <div class="ui-g-10">
+        <p-inputSwitch [(ngModel)]="passwordShow"></p-inputSwitch>
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" pButton icon="fa fa-check" (click)="saveUpdatePass()" [label]="'Save Change'"></button>
+      <button type="button" pButton icon="fa fa-sign-out" (click)="exitUpdatePass()" label="Cancel"></button>
+    </div>
+  </p-footer>
+</p-dialog>

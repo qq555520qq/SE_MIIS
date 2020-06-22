@@ -1,0 +1,64 @@
+<p-toast [style]="{marginTop: '8%',width: '18vw',left:'83%'}" position="top-center" key="login">
+</p-toast>
+
+<div class="topTitle">
+  Medical Information Integration System
+</div>
+<!-- 登入介面 -->
+<ng-container *ngIf="appearPage=='login'">
+  <div class="loginPage">
+    <h3 class="loginPageTitle">Login</h3>
+    <span class="ui-float-label">
+      <input id="float-inputUser" type="text" size="40" pInputText [(ngModel)]="accountInfo.user"
+        (keypress)="pressKey($event)">
+      <label for="float-inputUser" style="font-size: 18px;">Username</label>
+    </span>
+    <span class="ui-float-label" style="margin-top:24px;">
+      <input id="float-inputPass" size="40" type="password" [(ngModel)]="accountInfo.pass" pInputText
+        (keypress)="pressKey($event)">
+      <label for="float-inputPass" style="font-size: 18px;">Password</label>
+    </span>
+    <br>
+    <button id="loginButton" pButton type="button" label="Login" icon="fa fa-sign-in" (click)="login()"
+      class="ui-float-label" style="left:36%"></button>
+    <br>
+    <button id="forgotButton" pButton type="button" label="Forgot Password" icon="fa fa-external-link"
+      (click)="showForgotPass()" class="ui-float-label" style="left:21%"></button>
+    <!-- <button (click)="deleteAllPatient()">delete</button> -->
+    <div style="margin-left:22%;font-family: DFKai-sb;">
+      <br>
+      帳號格式：身份證字號<br>
+      密碼預設格式：出生月日 Ex:0218
+    </div>
+  </div>
+</ng-container>
+
+<!-- 忘記密碼視窗 -->
+<p-dialog *ngIf="showForgot" id='forgot_password' header="Forgot Password" [(visible)]="showForgot" [responsive]="true" showEffect="fade"
+  [modal]="true" [closable]="false" [draggable]="false">
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+      <div class="ui-g-12" style="text-align: center; font-size: 20px;">
+        {{'Please input your account and email to get your password in your mail'}}
+      </div>
+      <div class="ui-g-2">
+        <label for="account" class="xrequired">Account</label>
+      </div>
+      <div class="ui-g-10">
+        <input pInputText type="text" [(ngModel)]="accountForgot" />
+      </div>
+      <div class="ui-g-2">
+        <label for="email" class="xrequired">Email</label>
+      </div>
+      <div class="ui-g-10">
+        <input pInputText type="text" [(ngModel)]="emailForgot" />
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" pButton icon="fa fa-check" (click)="checkForgot()" [label]="'Submit'"></button>
+      <button type="button" pButton icon="fa fa-sign-out" (click)="exitForgot()" label="Cancel"></button>
+    </div>
+  </p-footer>
+</p-dialog>

@@ -1,0 +1,156 @@
+<p-toast [style]="{marginTop: '10%'}" position="top-center" key="err"></p-toast>
+<p-toast [style]="{marginTop: '1px'}"></p-toast>
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
+
+<p-table *ngIf="appoints" #appointTable [columns]="appointCol" [value]="viewAppoints" selectionMode="single"
+  [(selection)]="selectedAppointment" [paginator]="true" [rows]="10" (onRowSelect)="onRowSelect($event)"
+  [loading]="tableLoading">
+  <ng-template pTemplate="caption">
+    Appointment
+  </ng-template>
+  <!-- 標題 -->
+  <ng-template pTemplate="header" let-columns>
+    <tr style="font-size: 18px;">
+      <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+        {{col.header}}
+        <p-sortIcon [field]="col.field"></p-sortIcon>
+      </th>
+    </tr>
+    <tr>
+      <th *ngFor="let col of columns" [ngSwitch]="col.field" class="ui-fluid">
+        <input pInputText type="text" (input)="appointTable.filter($event.target.value, col.field, col.filterMatchMode)"
+          [value]="appointTable.filters[col.field]?.value">
+      </th>
+    </tr>
+  </ng-template>
+  <!-- 內容 -->
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <tr *ngIf="rowData" [pSelectableRow]="rowData" style="height: 6vh;font-size: 16px;"
+      [ngClass]="rowData['date'] < today ? 'beforeAppoint' : null" [id]="rowData.id">
+      <td *ngFor="let col of columns" [id]="'appointment_'+col.field+'_'+rowData.id">
+        <ng-container *ngIf="col.field!='time' && col.field!='date'">
+          {{rowData[col.field]}}
+        </ng-container>
+        <!-- time -->
+        <ng-container *ngIf="col.field=='time'">
+          <ng-container *ngIf="rowData[col.field]=='12:00:00'">
+            Morning diagnosis(09:00~12:00)
+          </ng-container>
+          <ng-container *ngIf="rowData[col.field]=='17:00:00'">
+            Afternoon diagnosis(14:00~17:00)
+          </ng-container>
+          <ng-container *ngIf="rowData[col.field]=='22:00:00'">
+            Night diagnosis(19:00~22:00)
+          </ng-container>
+        </ng-container>
+        <!-- date -->
+        <ng-container *ngIf="col.field=='date'">
+          {{rowData[col.field] | date:'yyyy-MM-dd'}}
+        </ng-container>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage" let-columns>
+    <tr>
+      <td [attr.colspan]="columns.length">
+        No records found
+      </td>
+    </tr>
+  </ng-template>
+  <!-- 底部 -->
+  <ng-template pTemplate="summary" let-rowData>
+    <div style="text-align:left">
+      <button pButton icon="fa fa-refresh" (click)="getAppointments()"
+        style="margin-right: 5px;font-size: 18px;"></button>
+      <button *ngIf="loginRole=='patient'" pButton icon="fa fa-user-plus" label="Make an appointment"
+        (click)="addAppointment()" style="font-size: 18px;"></button>
+    </div>
+  </ng-template>
+</p-table>
+
+<!-- 跳出的輸入視窗 -->
+<p-dialog id="appointment_addDialog" *ngIf="appoint && displayDialog" header="Appointment Detail"
+  [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" [closable]="false"
+  [draggable]="false">
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 bodyFont">
+      <div class="ui-g-1">
+        <label for="name">Name</label>
+      </div>
+      <div class="ui-g-2">
+        <input pInputText [(ngModel)]="appoint.name" readonly />
+      </div>
+      <div class="ui-g-1">
+        <label for="id">Id</label>
+      </div>
+      <div class="ui-g-2">
+        <input pInputText [(ngModel)]="appoint.idNum" readonly />
+      </div>
+      <div class="ui-g-1">
+        <label for="subject" class="xrequired">Subject</label>
+      </div>
+      <div class="ui-g-2">
+        <!-- 科別輸入介面 -->
+        <p-dropdown *ngIf="loginRole!=='doctor' && loginRole!=='nurse'" [options]="appointSubjects"
+          [(ngModel)]="appoint.subject" placeholder="Select subject" appendTo="body" autofocus="true"
+          (onChange)="dataChange()"></p-dropdown>
+        <!-- 科別不可修改 -->
+        <input *ngIf="loginRole==='doctor' || loginRole==='nurse'" pInputText id="subject" [(ngModel)]="appoint.subject"
+          readonly />
+      </div>
+      <div class="ui-g-1">
+        <label for="doctor" class="xrequired">Doctor</label>
+      </div>
+      <div class="ui-g-2">
+        <!-- 醫生輸入介面 -->
+        <p-dropdown *ngIf="loginRole!=='doctor' && loginRole!=='nurse'" [options]="appointDoctors"
+          [(ngModel)]="appoint.doctor" placeholder="Select doctor" appendTo="body" autofocus="true"
+          [disabled]="!isHaveSubject" (onChange)="dataChange()"></p-dropdown>
+        <!-- 醫生不可修改 -->
+        <input *ngIf="loginRole==='doctor' || loginRole==='nurse'" pInputText id="doctor" [(ngModel)]="appoint.doctor"
+          readonly />
+      </div>
+      <div class="ui-g-1">
+        <label for="date" class="xrequired">Date</label>
+      </div>
+      <div class="ui-g-2">
+        <!-- 看診日期輸入介面 -->
+        <p-calendar *ngIf="loginRole!=='doctor' && loginRole!=='nurse'" [(ngModel)]="appoint.date" dateFormat="yy-mm-dd"
+          appendTo="body" showIcon="true" readonlyInput="true" [yearNavigator]="true" yearRange="2019:2020"
+          [minDate]="today" [maxDate]="appointDay" [monthNavigator]="true" [disabled]="!isHaveDoctor"
+          (onSelect)="dataChange()"></p-calendar>
+        <!-- 看診日期不可修改 -->
+        <input *ngIf="loginRole==='doctor' || loginRole==='nurse'" pInputText id="date"
+          [value]="dateToString(appoint.date)" readonly />
+      </div>
+      <div class="ui-g-1">
+        <label for="time" class="xrequired">Time</label>
+      </div>
+      <div class="ui-g-2">
+        <!-- 看診時間輸入介面 -->
+        <p-dropdown *ngIf="loginRole!=='doctor' && loginRole!=='nurse'" [options]="appointTimes"
+          [(ngModel)]="appoint.time" placeholder="Select time" appendTo="body" autofocus="true" [disabled]="!isHaveDate"
+          (onChange)="dataChange()"></p-dropdown>
+        <!-- 看診時間不可修改 -->
+        <input *ngIf="loginRole==='doctor' || loginRole==='nurse'" pInputText id="time"
+          [value]="timeToview(appoint.time)" readonly />
+      </div>
+      <div class="ui-g-1">
+        <label for="doctor">Location</label>
+      </div>
+      <div class="ui-g-2">
+        <input pInputText [(ngModel)]="appoint.location" readonly />
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button *ngIf="loginRole!=='doctor' && loginRole!=='nurse'" type="button" pButton icon="fa fa-check"
+        (click)="saveAppointment()" label="Save"></button>
+      <button *ngIf="!newAppointment" type="button" pButton icon="fa fa-close" (click)="cancelAppointment()"
+        label="Cancel appointment"></button>
+      <button type="button" pButton icon="fa fa-sign-out" (click)="exitAppointment()" label="Exit"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+<!-- <button (click)="deleteAllOnile()">delete</button> -->

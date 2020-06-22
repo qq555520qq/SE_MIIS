@@ -1,0 +1,12 @@
+.inputtext{
+  width:100%;
+}
+
+.statusFalse{
+  background-color: gray !important;
+}
+
+.autoNewline
+{
+word-break: break-all;
+}

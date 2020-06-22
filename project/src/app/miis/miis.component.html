@@ -1,0 +1,40 @@
+<p-toast [style]="{marginTop: '3%'}" position="top-center" key="showTopCenter">
+</p-toast>
+<p-toast [style]="{marginTop: '3%'}" position="top-right" key="showTopRight">
+</p-toast>
+<p-toast [style]="{marginTop: '3%'}" position="top-left" key="showTopLeft">
+</p-toast>
+<p-toast [style]="{marginTop: '3%'}" position="bottom-right" key="showBottomRight">
+</p-toast>
+<p-toast [style]="{marginTop: '3%'}" position="bottom-left" key="showBottomLeft">
+</p-toast>
+<p-toast [style]="{marginTop: '3%'}" position="bottom-center" key="showBottomCenter">
+</p-toast>
+
+<!-- 登入頁面 -->
+<div *ngIf="apperPage=='login'">
+  <app-login (loginBool)="loginSuccess($event)"></app-login>
+</div>
+<div *ngIf="apperPage!='login'">
+  <div class="topTitle">
+    {{'Welcome To Medical Information Integration System'}}
+  </div>
+  <p-menubar [model]="items">
+    <button pButton [label]="loginUser" icon=" fa fa-user" style="margin-left:.25em;font-size:20px;"
+      (click)="showUser()"></button>
+    <button pButton label="Logout" icon="fa fa-sign-out" style="margin-left:.25em;font-size:20px;"
+      (click)="logOut()"></button>
+  </p-menubar>
+  <div *ngIf="apperPage=='case'">
+    <app-case></app-case>
+  </div>
+  <div *ngIf="apperPage=='roles'">
+    <app-accounts></app-accounts>
+  </div>
+  <div *ngIf="apperPage=='appointment'">
+    <app-online></app-online>
+  </div>
+  <div *ngIf="apperPage=='rental'">
+    <app-online-rental></app-online-rental>
+  </div>
+</div>

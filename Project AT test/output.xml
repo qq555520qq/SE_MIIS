@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 3.0.4 (Python 3.7.4 on win32)" generated="20200102 13:33:52.440">
+<suite id="s1" name="MIIS Robot" source="C:\Users\mark\Desktop\MIIS_Robot_Test\MIIS_Robot">
+<suite id="s1-s1" name="Case Page Test" source="C:\Users\mark\Desktop\MIIS_Robot_Test\MIIS_Robot\case_page_test.robot">
+<test id="s1-s1-t1" name="Test For Doctor Can Add Medication">
+<kw name="Run Keywords" library="BuiltIn" type="setup">
+<doc>Executes all the given keywords in a sequence.</doc>
+<arguments>
+<arg>Open Browser</arg>
+<arg>http://localhost:4200/</arg>
+<arg>chrome</arg>
+<arg>AND</arg>
+<arg>Maximize Browser Window</arg>
+</arguments>
+<kw name="Open Browser" library="SeleniumLibrary">
+<doc>Opens a new browser instance to the given ``url``.</doc>
+<arguments>
+<arg>http://localhost:4200/</arg>
+<arg>chrome</arg>
+</arguments>
+<msg timestamp="20200102 13:33:53.038" level="INFO">Opening browser 'chrome' to base url 'http://localhost:4200/'.</msg>
+<status status="PASS" starttime="20200102 13:33:53.038" endtime="20200102 13:33:58.435"></status>
+</kw>
+<kw name="Maximize Browser Window" library="SeleniumLibrary">
+<doc>Maximizes current browser window.</doc>
+<status status="PASS" starttime="20200102 13:33:58.436" endtime="20200102 13:33:59.557"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:33:53.037" endtime="20200102 13:33:59.557"></status>
+</kw>
+<kw name="Login To The Page" library="Keyword">
+<arguments>
+<arg>userName=&amp;{doctorAccount}[userName]</arg>
+<arg>password=&amp;{doctorAccount}[password]</arg>
+</arguments>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>id=float-inputUser</arg>
+<arg>${userName}</arg>
+</arguments>
+<msg timestamp="20200102 13:33:59.559" level="INFO">Typing text 'F129642705' into text field 'id=float-inputUser'.</msg>
+<status status="PASS" starttime="20200102 13:33:59.558" endtime="20200102 13:33:59.718"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20200102 13:34:00.720" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20200102 13:33:59.719" endtime="20200102 13:34:00.720"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${password}'!='${EMPTY}'</arg>
+<arg>Input Text</arg>
+<arg>id=float-inputPass</arg>
+<arg>${password}</arg>
+</arguments>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>id=float-inputPass</arg>
+<arg>${password}</arg>
+</arguments>
+<msg timestamp="20200102 13:34:00.722" level="INFO">Typing text '1224' into text field 'id=float-inputPass'.</msg>
+<status status="PASS" starttime="20200102 13:34:00.721" endtime="20200102 13:34:00.834"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:00.720" endtime="20200102 13:34:00.834"></status>
+</kw>
+<kw name="Click Button After It Is Visible" library="Keyword">
+<arguments>
+<arg>//button[normalize-space()='Login']</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible On Page" library="Keyword">
+<arguments>
+<arg>${xpath}</arg>
+<arg>${shortPeriodOfTime}</arg>
+<arg>error=Login successfully should be shown.</arg>
+</arguments>
+<kw name="Wait Until Page Contains Element" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` appears on current page.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:00.836" endtime="20200102 13:34:00.851"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:00.851" endtime="20200102 13:34:00.876"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:00.835" endtime="20200102 13:34:00.876"></status>
+</kw>
+<kw name="Click Button" library="SeleniumLibrary">
+<doc>Clicks button identified by ``locator``.</doc>
+<arguments>
+<arg>${xpath}</arg>
+</arguments>
+<msg timestamp="20200102 13:34:00.876" level="INFO">Clicking button '//button[normalize-space()='Login']'.</msg>
+<status status="PASS" starttime="20200102 13:34:00.876" endtime="20200102 13:34:00.995"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20200102 13:34:01.996" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20200102 13:34:00.995" endtime="20200102 13:34:01.996"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:00.834" endtime="20200102 13:34:01.996"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20200102 13:34:02.998" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20200102 13:34:01.997" endtime="20200102 13:34:02.998"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:33:59.557" endtime="20200102 13:34:02.998"></status>
+</kw>
+<kw name="Success Should be Visible" library="Keyword">
+<arguments>
+<arg>Login successfully</arg>
+</arguments>
+<kw name="Wait Until Page Contains Element" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` appears on current page.</doc>
+<arguments>
+<arg>//*[@class='ui-toast-summary' and normalize-space()='${message}']</arg>
+<arg>${shortPeriodOfTime}</arg>
+<arg>error=Login successfully should be shown.</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:03.000" endtime="20200102 13:34:03.012"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>//*[@class='ui-toast-summary' and normalize-space()='${message}']</arg>
+<arg>${shortPeriodOfTime}</arg>
+<arg>error=Login successfully should be shown.</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:03.013" endtime="20200102 13:34:03.036"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20200102 13:34:04.038" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20200102 13:34:03.037" endtime="20200102 13:34:04.039"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:02.999" endtime="20200102 13:34:04.040"></status>
+</kw>
+<kw name="Click Tab" library="Keyword">
+<arguments>
+<arg>Medical Record Management</arg>
+</arguments>
+<kw name="Mouse Over" library="SeleniumLibrary">
+<doc>Simulates hovering mouse over the element ``locator``.</doc>
+<arguments>
+<arg>//*[@class='ui-menuitem-link ui-corner-all ng-star-inserted']//*[normalize-space()='FHIR']</arg>
+</arguments>
+<msg timestamp="20200102 13:34:04.044" level="INFO">Simulating Mouse Over on element '//*[@class='ui-menuitem-link ui-corner-all ng-star-inserted']//*[normalize-space()='FHIR']'.</msg>
+<status status="PASS" starttime="20200102 13:34:04.043" endtime="20200102 13:34:04.587"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20200102 13:34:05.589" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20200102 13:34:04.587" endtime="20200102 13:34:05.590"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${subTabName}' != '${EMPTY}'</arg>
+<arg>Run Keywords</arg>
+<arg>Mouse Over</arg>
+<arg>//*[@class='ui-menuitem-link ui-corner-all ng-star-inserted']//*[normalize-space()='${tabName}']</arg>
+<arg>AND</arg>
+<arg>Click Element After It Is Visible</arg>
+<arg>//*[@class='ui-menuitem-link ui-corner-all ng-star-inserted']//*[normalize-space()='${subTabName}']</arg>
+<arg>AND</arg>
+<arg>Wait Until Element Is Visible On Page</arg>
+<arg>//*[contains(@class,'ng-star-inserted')]//div[normalize-space()='${subTabName}']</arg>
+<arg>${shortPeriodOfTime}</arg>
+<arg>error=should be visible.</arg>
+<arg>ELSE</arg>
+<arg>Click Element After It Is Visible</arg>
+<arg>//*[@class='ui-menuitem-link ui-corner-all ng-star-inserted']//*[normalize-space()='${tabName}']</arg>
+</arguments>
+<kw name="Click Element After It Is Visible" library="Keyword">
+<arguments>
+<arg>//*[@class='ui-menuitem-link ui-corner-all ng-star-inserted']//*[normalize-space()='${tabName}']</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible On Page" library="Keyword">
+<arguments>
+<arg>${xpath}</arg>
+<arg>${shortPeriodOfTime}</arg>
+<arg>error=Element is not visible.</arg>
+</arguments>
+<kw name="Wait Until Page Contains Element" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` appears on current page.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:05.599" endtime="20200102 13:34:05.638"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:05.638" endtime="20200102 13:34:05.670"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:05.597" endtime="20200102 13:34:05.670"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${xpath}</arg>
+</arguments>
+<msg timestamp="20200102 13:34:05.671" level="INFO">Clicking element '//*[@class='ui-menuitem-link ui-corner-all ng-star-inserted']//*[normalize-space()='Medical Record Management']'.</msg>
+<status status="PASS" starttime="20200102 13:34:05.670" endtime="20200102 13:34:05.771"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20200102 13:34:06.773" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20200102 13:34:05.772" endtime="20200102 13:34:06.774"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:05.595" endtime="20200102 13:34:06.775"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:05.591" endtime="20200102 13:34:06.776"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:04.041" endtime="20200102 13:34:06.777"></status>
+</kw>
+<kw name="Click Element After It Is Visible" library="Keyword">
+<arguments>
+<arg>(//tr[contains(@class,'ui-selectable-row ng-star-inserted')])[1]</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible On Page" library="Keyword">
+<arguments>
+<arg>${xpath}</arg>
+<arg>${shortPeriodOfTime}</arg>
+<arg>error=Element is not visible.</arg>
+</arguments>
+<kw name="Wait Until Page Contains Element" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` appears on current page.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:06.781" endtime="20200102 13:34:06.812"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:06.813" endtime="20200102 13:34:06.852"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:06.780" endtime="20200102 13:34:06.852"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${xpath}</arg>
+</arguments>
+<msg timestamp="20200102 13:34:06.854" level="INFO">Clicking element '(//tr[contains(@class,'ui-selectable-row ng-star-inserted')])[1]'.</msg>
+<status status="PASS" starttime="20200102 13:34:06.853" endtime="20200102 13:34:06.971"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20200102 13:34:07.975" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20200102 13:34:06.973" endtime="20200102 13:34:07.976"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:06.778" endtime="20200102 13:34:07.977"></status>
+</kw>
+<kw name="Click Element After It Is Visible" library="Keyword">
+<arguments>
+<arg>//button[normalize-space()='Add a record']</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible On Page" library="Keyword">
+<arguments>
+<arg>${xpath}</arg>
+<arg>${shortPeriodOfTime}</arg>
+<arg>error=Element is not visible.</arg>
+</arguments>
+<kw name="Wait Until Page Contains Element" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` appears on current page.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:07.983" endtime="20200102 13:34:08.017"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:08.018" endtime="20200102 13:34:08.054"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:07.981" endtime="20200102 13:34:08.054"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${xpath}</arg>
+</arguments>
+<msg timestamp="20200102 13:34:08.056" level="INFO">Clicking element '//button[normalize-space()='Add a record']'.</msg>
+<status status="PASS" starttime="20200102 13:34:08.055" endtime="20200102 13:34:08.159"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20200102 13:34:09.161" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20200102 13:34:08.159" endtime="20200102 13:34:09.162"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:07.978" endtime="20200102 13:34:09.163"></status>
+</kw>
+<kw name="Select Dropdown By Name" library="Keyword">
+<arguments>
+<arg>Condition</arg>
+<arg>Sore throat</arg>
+</arguments>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>DeviceName=device</arg>
+<arg>Quantity=quantity</arg>
+<arg>Subject=subject</arg>
+<arg>Doctor=doctor</arg>
+<arg>Time=time</arg>
+<arg>Gender=gender</arg>
+<arg>Role=Patient</arg>
+<arg>Condition=condition</arg>
+<arg>Medications=medication</arg>
+</arguments>
+<assign>
+<var>&amp;{newFieldNames}</var>
+</assign>
+<msg timestamp="20200102 13:34:09.169" level="INFO">&amp;{newFieldNames} = { DeviceName=device | Quantity=quantity | Subject=subject | Doctor=doctor | Time=time | Gender=gender | Role=Patient | Condition=condition | Medications=medication }</msg>
+<status status="PASS" starttime="20200102 13:34:09.166" endtime="20200102 13:34:09.169"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${default}'=='${EMPTY}'</arg>
+<arg>Click Element After It Is Visible</arg>
+<arg>//div[normalize-space()='${fieldName}']//./following-sibling::*//div[contains(normalize-space(),'&amp;{newFieldNames}[${fieldName}]')]</arg>
+<arg>ELSE</arg>
+<arg>Click Element After It Is Visible</arg>
+<arg>//div[normalize-space()='${fieldName}']//./following-sibling::*//div[contains(normalize-space(),'${default}')]</arg>
+</arguments>
+<kw name="Click Element After It Is Visible" library="Keyword">
+<arguments>
+<arg>//div[normalize-space()='${fieldName}']//./following-sibling::*//div[contains(normalize-space(),'&amp;{newFieldNames}[${fieldName}]')]</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible On Page" library="Keyword">
+<arguments>
+<arg>${xpath}</arg>
+<arg>${shortPeriodOfTime}</arg>
+<arg>error=Element is not visible.</arg>
+</arguments>
+<kw name="Wait Until Page Contains Element" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` appears on current page.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:09.177" endtime="20200102 13:34:09.213"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:09.214" endtime="20200102 13:34:09.251"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:09.175" endtime="20200102 13:34:09.251"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${xpath}</arg>
+</arguments>
+<msg timestamp="20200102 13:34:09.252" level="INFO">Clicking element '//div[normalize-space()='Condition']//./following-sibling::*//div[contains(normalize-space(),'condition')]'.</msg>
+<status status="PASS" starttime="20200102 13:34:09.252" endtime="20200102 13:34:09.335"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20200102 13:34:10.338" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20200102 13:34:09.336" endtime="20200102 13:34:10.339"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:09.173" endtime="20200102 13:34:10.340"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:09.170" endtime="20200102 13:34:10.341"></status>
+</kw>
+<kw name="Wait Until Element Is Visible On Page" library="Keyword">
+<arguments>
+<arg>//*[contains(@class, 'ui-dropdown-items ui-dropdown-list')]</arg>
+<arg>timeout=${shortPeriodOfTime}</arg>
+<arg>error=`${dropdownName}` select dropdown should be visible.</arg>
+</arguments>
+<kw name="Wait Until Page Contains Element" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` appears on current page.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:10.346" endtime="20200102 13:34:10.382"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:10.383" endtime="20200102 13:34:10.428"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:10.342" endtime="20200102 13:34:10.429"></status>
+</kw>
+<kw name="Click Element After It Is Visible" library="Keyword">
+<arguments>
+<arg>//*[contains(@class,'ng-star-inserted')]//li[normalize-space()='${dropdownName}']</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible On Page" library="Keyword">
+<arguments>
+<arg>${xpath}</arg>
+<arg>${shortPeriodOfTime}</arg>
+<arg>error=Element is not visible.</arg>
+</arguments>
+<kw name="Wait Until Page Contains Element" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` appears on current page.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:10.432" endtime="20200102 13:34:10.451"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:10.452" endtime="20200102 13:34:10.483"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:10.431" endtime="20200102 13:34:10.483"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${xpath}</arg>
+</arguments>
+<msg timestamp="20200102 13:34:10.484" level="INFO">Clicking element '//*[contains(@class,'ng-star-inserted')]//li[normalize-space()='Sore throat']'.</msg>
+<status status="PASS" starttime="20200102 13:34:10.484" endtime="20200102 13:34:10.578"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20200102 13:34:11.580" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20200102 13:34:10.579" endtime="20200102 13:34:11.581"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:10.430" endtime="20200102 13:34:11.582"></status>
+</kw>
+<kw name="Wait Until Element Is Visible On Page" library="Keyword">
+<arguments>
+<arg>//*[contains(@class,'ui-dropdown-label') and normalize-space()='${dropdownName}']</arg>
+<arg>timeout=${shortPeriodOfTime}</arg>
+<arg>error=`${dropdownName}` dropdown should be selected.</arg>
+</arguments>
+<kw name="Wait Until Page Contains Element" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` appears on current page.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:11.587" endtime="20200102 13:34:11.629"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<status status="PASS" starttime="20200102 13:34:11.631" endtime="20200102 13:34:11.672"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:11.583" endtime="20200102 13:34:11.673"></status>
+</kw>
+<status status="PASS" starttime="20200102 13:34:09.164" endtime="20200102 13:34:11.673"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>//input[contains(@class,'ng-star-inserted')]</arg>
+<arg>FM2</arg>
+</arguments>
+<msg timestamp="20200102 13:34:11.674" level="INFO">Typing text 'FM2' into text field '//input[contains(@class,'ng-star-inserted')]'.</msg>
+<status status="PASS" starttime="20200102 13:34:11.674" endtime="20200102 13:34:11.810"></status>
+</kw>
+<kw name="Click Element After It Is Visible" library="Keyword">
+<arguments>
+<arg>//span[normalize-space()='FM2']</arg>
+</arguments>
+<kw name="Wait Until Element Is Visible On Page" library="Keyword">
+<arguments>
+<arg>${xpath}</arg>
+<arg>${shortPeriodOfTime}</arg>
+<arg>error=Element is not visible.</arg>
+</arguments>
+<kw name="Wait Until Page Contains Element" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` appears on current page.</doc>
+<arguments>
+<arg>${xpath}</arg>
+<arg>${timeout}</arg>
+<arg>${error}</arg>
+</arguments>
+<kw name="Capture Page Screenshot" library="SeleniumLibrary">
+<doc>Takes screenshot of the current page and embeds it into log file.</doc>
+<msg timestamp="20200102 13:34:15.364" level="INFO" html="yes">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-3.png"&gt;&lt;img src="selenium-screenshot-3.png" width="800px"&gt;&lt;/a&gt;</msg>
+<status status="PASS" starttime="20200102 13:34:14.918" endtime="20200102 13:34:15.364"></status>
+</kw>
+<msg timestamp="20200102 13:34:15.395" level="FAIL">Element is not visible.</msg>
+<status status="FAIL" starttime="20200102 13:34:11.811" endtime="20200102 13:34:15.395"></status>
+</kw>
+<status status="FAIL" starttime="20200102 13:34:11.810" endtime="20200102 13:34:15.396"></status>
+</kw>
+<status status="FAIL" starttime="20200102 13:34:11.810" endtime="20200102 13:34:15.397"></status>
+</kw>
+<kw name="Close All Browsers" library="SeleniumLibrary" type="teardown">
+<doc>Closes all open browsers and resets the browser cache.</doc>
+<status status="PASS" starttime="20200102 13:34:15.398" endtime="20200102 13:34:17.534"></status>
+</kw>
+<status status="FAIL" starttime="20200102 13:33:53.037" endtime="20200102 13:34:17.535" critical="yes">Element is not visible.</status>
+</test>
+<status status="FAIL" starttime="20200102 13:33:52.525" endtime="20200102 13:34:17.538"></status>
+</suite>
+<status status="FAIL" starttime="20200102 13:33:52.505" endtime="20200102 13:34:17.545"></status>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="1">Critical Tests</stat>
+<stat pass="0" fail="1">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="0" fail="1" id="s1" name="MIIS Robot">MIIS Robot</stat>
+<stat pass="0" fail="1" id="s1-s1" name="Case Page Test">MIIS Robot.Case Page Test</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

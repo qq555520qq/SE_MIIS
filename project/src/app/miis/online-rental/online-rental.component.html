@@ -1,0 +1,130 @@
+<p-toast [style]="{marginTop: '10%'}" position="top-center" key="err"></p-toast>
+<p-toast [style]="{marginTop: '1px'}"></p-toast>
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
+
+
+<p-table *ngIf="rentals" #rentTable [columns]="rentalCol" [value]="viewRentals" selectionMode="single"
+  [(selection)]="selectedRental" [paginator]="true" [rows]="10" (onRowSelect)="onRowSelect($event)"
+  [loading]="tableLoading">
+  <ng-template pTemplate="caption">
+    Rental
+  </ng-template>
+  <!-- 標題 -->
+  <ng-template pTemplate="header" let-columns>
+    <tr style="font-size: 18px;">
+      <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+        {{col.header}}
+        <p-sortIcon [field]="col.field"></p-sortIcon>
+      </th>
+    </tr>
+    <tr>
+      <th *ngFor="let col of columns" [ngSwitch]="col.field" class="ui-fluid">
+        <input pInputText type="text" (input)="rentTable.filter($event.target.value, col.field, col.filterMatchMode)"
+          [value]="rentTable.filters[col.field]?.value">
+      </th>
+    </tr>
+  </ng-template>
+  <!-- 內容 -->
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <tr *ngIf="rowData" [id]="rowData.id" [pSelectableRow]="rowData" [ngClass]="rowData['date'] < today ? 'beforerental' : null"
+      style="height: 6vh;font-size: 16px;">
+      <td *ngFor="let col of columns" [id]="'rental_'+col.field+'_'+rowData.id">
+        <ng-container *ngIf="col.field!='startDate' && col.field!='endDate'">
+          {{rowData[col.field]}}
+        </ng-container>
+        <!-- startDate -->
+        <ng-container *ngIf="col.field=='startDate'">
+          {{rowData[col.field] | date:'yyyy-MM-dd'}}
+        </ng-container>
+        <!-- endDate -->
+        <ng-container *ngIf="col.field=='endDate'">
+          {{rowData[col.field] | date:'yyyy-MM-dd'}}
+        </ng-container>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage" let-columns>
+    <tr>
+      <td [attr.colspan]="columns.length">
+        No records found
+      </td>
+    </tr>
+  </ng-template>
+  <!-- 底部 -->
+  <ng-template pTemplate="summary" let-rowData>
+    <div style="text-align:left">
+      <button pButton icon="fa fa-refresh" (click)="getRentals()" style="margin-right: 5px;font-size: 18px;"></button>
+      <button *ngIf="loginRole=='patient'" pButton icon="fa fa-user-plus" label="Make an rental" (click)="addRental()"
+        style="font-size: 18px;"></button>
+    </div>
+  </ng-template>
+</p-table>
+
+<!-- 跳出的輸入視窗 -->
+<p-dialog id="rental_addDialog" *ngIf="rental && displayDialog" header="Rental Detail" [(visible)]="displayDialog"
+  [responsive]="true" showEffect="fade" [modal]="true" [closable]="false" [draggable]="false" [width]="700">
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 bodyFont">
+      <div class="ui-g-2">
+        <label for="PatientName">PatientName</label>
+      </div>
+      <div class="ui-g-10">
+        <input pInputText [(ngModel)]="rental.patientName" readonly />
+      </div>
+      <div class="ui-g-2">
+        <label for="DeviceName" class="xrequired">DeviceName</label>
+      </div>
+      <div class="ui-g-10">
+        <!-- device輸入介面 -->
+        <p-dropdown *ngIf="loginRole!=='doctor' && loginRole!=='nurse'" [options]="deviceOption"
+          [(ngModel)]="rental.deviceName" placeholder="Select device" appendTo="body" autofocus="true"></p-dropdown>
+        <!-- device不可修改 -->
+        <input *ngIf="loginRole==='doctor' || loginRole==='nurse'" pInputText id="deviceName"
+          [(ngModel)]="rental.deviceName" readonly />
+      </div>
+      <div class="ui-g-2">
+        <label for="Quantity" class="xrequired">Quantity</label>
+      </div>
+      <div class="ui-g-10">
+        <!-- 數量輸入介面 -->
+        <p-dropdown *ngIf="loginRole!=='doctor' && loginRole!=='nurse'" [options]="quantityOption"
+          [(ngModel)]="rental.quantity" placeholder="Select quantity" appendTo="body" autofocus="true"></p-dropdown>
+        <!-- 數量不可修改 -->
+        <input *ngIf="loginRole==='doctor' || loginRole==='nurse'" pInputText id="quantity"
+          [(ngModel)]="rental.quantity" readonly />
+      </div>
+      <div class="ui-g-2">
+        <label for="StartDate" class="xrequired">StartDate</label>
+      </div>
+      <div class="ui-g-10">
+        <!-- 開始租借時間輸入介面 -->
+        <p-calendar *ngIf="loginRole!=='doctor' && loginRole!=='nurse'" [(ngModel)]="rental.startDate"
+          dateFormat="yy-mm-dd" appendTo="body" readonlyInput="true" [yearNavigator]="true" yearRange="2019:2020"
+          [minDate]="today" [maxDate]="rentDay" [monthNavigator]="true" (onSelect)="setEndDate($event)">
+        </p-calendar>
+        <!-- 開始租借時間不可修改 -->
+        <input *ngIf="loginRole==='doctor' || loginRole==='nurse'" pInputText id="startDate"
+          [value]="dateToString(rental.startDate)" readonly />
+      </div>
+      <div class="ui-g-2">
+        <label for="EndDate">EndDate</label>
+      </div>
+      <div class="ui-g-10">
+        <!-- 歸還租借時間輸入介面 -->
+        <input pInputText [value]="rental.startDate?dateToString(rental.endDate):null" readonly>
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button *ngIf="loginRole!=='doctor' && loginRole!=='nurse'" type="button" pButton icon="fa fa-check"
+        (click)="saveRental()" label="Save"></button>
+      <button *ngIf="!newRental" type="button" pButton icon="fa fa-close" (click)="cancelRental()"
+        label="Cancel Rental"></button>
+      <button type="button" pButton icon="fa fa-sign-out" (click)="exitRental()" label="Exit"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+
+<!-- <input type="text" [(ngModel)]="device">
+<button (click)="addDevice(device)">Add</button> -->

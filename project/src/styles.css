@@ -1,0 +1,69 @@
+.selectDrop{
+  -webkit-appearance: menulist !important;
+}
+
+body {
+  margin:0;
+  padding:0;
+  background: #000 url(./assets/background_light.jpg) center center fixed no-repeat;
+  -moz-background-size: cover;
+  background-size: cover;
+}
+
+.haveRequire{
+ background-color: white !important;
+}
+.require{
+  background-color: yellow !important;
+}
+
+label.xrequired:before {
+  content: '* ';
+  color: red;
+}
+
+.topTitle{
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  height: 60px;
+  text-align: center;
+  font-size: 40px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #ffffff;
+  background: -webkit-linear-gradient(left,lightgreen,darkgreen);
+  background: -o-linear-gradient(right,lightgreen,darkgreen);
+  background: -moz-linear-gradient(right,lightgreen,darkgreen);
+  background: linear-gradient(to right,lightgreen,darkgreen);
+}
+
+body .ui-menubar{
+ height: 60px !important;
+ font-size: 20px !important;
+}
+
+body .ui-toast-message{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 16px;
+}
+
+.loginPage{
+  width: 16vw;
+  height: 16vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -8vh;
+  margin-left: -8vw;
+}
+
+.loginInput{
+  width: 16vw;
+  height: 4vh;
+}
+
+body .ui-table .ui-table-caption{
+  font-size: 18px !important;
+}
